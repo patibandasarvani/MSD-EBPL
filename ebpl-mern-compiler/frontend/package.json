@@ -2,7 +2,7 @@
   "name": "ebpl-compiler-frontend",
   "version": "1.0.0",
   "description": "EBPL Compiler Frontend",
-  "homepage": "https://patibandasarvani.github.io/EBPL-final-project",
+  "homepage": "https://patibandasarvani.github.io/MSD-EBPL",
   "dependencies": {
     "axios": "^1.12.2",
     "lucide-react": "^0.263.1",
@@ -16,7 +16,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "browserslist": {
     "production": [
@@ -29,5 +31,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
   }
 }
