@@ -60,18 +60,36 @@ jobs:
           echo "FRONTEND_URL=https://patibandasarvani.github.io/EBPL-final-project" > deploy_urls.env
           echo "BACKEND_URL=${RENDER_URL}" >> deploy_urls.env
 
-      - name: Update LINKS.md and push
+      - name: Update LINKS.md and README.md, then push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           source deploy_urls.env
+          
+          # Update LINKS.md
           echo "# Live Links" > LINKS.md
           echo >> LINKS.md
           echo "- Frontend (GitHub Pages): ${FRONTEND_URL}" >> LINKS.md
           echo "- Backend (Render): ${BACKEND_URL}" >> LINKS.md
+          
+          # Update README.md (preserve everything except links section)
+          awk -v frontend="${FRONTEND_URL}" -v backend="${BACKEND_URL}" '
+          BEGIN { p=1 }
+          /^## Live Links/ { 
+            print $0
+            print ""
+            print "- Frontend (GitHub Pages):", frontend
+            print "- Backend (Render):", backend
+            print ""
+            p=0
+          }
+          /^## / && !/^## Live Links/ { p=1 }
+          p==1 { print $0 }
+          ' README.md > README.md.new
+          mv README.md.new README.md
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add LINKS.md
-          git commit -m "chore(ci): update LINKS.md with deployed URLs" || echo "No changes to commit"
+          git add LINKS.md README.md
+          git commit -m "chore(ci): update LINKS.md and README.md with deployed URLs" || echo "No changes to commit"
           git push origin HEAD:main || echo "Push failed (maybe no permission)"
