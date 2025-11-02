@@ -1,0 +1,43 @@
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# React build
+build/
+dist/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Archives and binaries
+*.zip
+*.tar.gz
+*.exe
+*.dll
+*.so
+
+# Office files and large media (add/remove as needed)
+*.pdf
+*.docx
+*.pptx
+*.xls*
+*.png
+*.jpg
+*.jpeg
+*.bmp
+*.gif
+
+# IDE / Editor
+.vscode/
+/.idea/
+*.suo
+*.user
+*.userosscache
+*.sln
+
+# Misc
+ebpl-mern-compiler final.zip
