@@ -60,36 +60,40 @@ jobs:
           echo "FRONTEND_URL=https://patibandasarvani.github.io/EBPL-final-project" > deploy_urls.env
           echo "BACKEND_URL=${RENDER_URL}" >> deploy_urls.env
 
-      - name: Update LINKS.md and README.md, then push
+      - name: Update LINKS.md and README.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           source deploy_urls.env
-          
           # Update LINKS.md
           echo "# Live Links" > LINKS.md
           echo >> LINKS.md
           echo "- Frontend (GitHub Pages): ${FRONTEND_URL}" >> LINKS.md
           echo "- Backend (Render): ${BACKEND_URL}" >> LINKS.md
           
-          # Update README.md (preserve everything except links section)
-          awk -v frontend="${FRONTEND_URL}" -v backend="${BACKEND_URL}" '
-          BEGIN { p=1 }
-          /^## Live Links/ { 
-            print $0
-            print ""
-            print "- Frontend (GitHub Pages):", frontend
-            print "- Backend (Render):", backend
-            print ""
-            p=0
-          }
-          /^## / && !/^## Live Links/ { p=1 }
-          p==1 { print $0 }
-          ' README.md > README.md.new
-          mv README.md.new README.md
+          # Create/update README.md with project info and links
+          if [ ! -f README.md ]; then
+            echo "# EBPL Compiler" > README.md
+            echo >> README.md
+            echo "EBPL (Extendable Business Process Language) Compiler with React frontend and Express backend." >> README.md
+            echo >> README.md
+          fi
+          
+          # Add or update the links section in README
+          if grep -q "^## Live Links" README.md; then
+            # Links section exists - replace it and everything after until next ## or EOF
+            sed -i '/^## Live Links/,/^## \|$/c\## Live Links\n\n- Frontend (GitHub Pages): '"${FRONTEND_URL}"'\n- Backend (Render): '"${BACKEND_URL}"'\n' README.md
+          else
+            # No links section - append it
+            echo >> README.md
+            echo "## Live Links" >> README.md
+            echo >> README.md
+            echo "- Frontend (GitHub Pages): ${FRONTEND_URL}" >> README.md
+            echo "- Backend (Render): ${BACKEND_URL}" >> README.md
+          fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add LINKS.md README.md
-          git commit -m "chore(ci): update LINKS.md and README.md with deployed URLs" || echo "No changes to commit"
+          git commit -m "docs: update LINKS.md and README.md with deployed URLs" || echo "No changes to commit"
           git push origin HEAD:main || echo "Push failed (maybe no permission)"
