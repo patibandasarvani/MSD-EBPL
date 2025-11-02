@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "MSD-EBPL"
+		},
+		{
+			"path": "../ebpl-mern-compiler_restored/ebpl-mern-compiler/backend"
+		},
+		{
+			"path": "../ebpl-mern-compiler_restored/ebpl-mern-compiler/frontend"
+		}
+	],
+	"settings": {}
+}
